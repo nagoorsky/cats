@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
+import { LayoutComponent } from './components/layout/layout.component';
 @Component({
   selector: 'app-root',
-  imports: [MatButtonModule],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  imports: [LayoutComponent],
+  template: '<app-layout />',
 })
 export class AppComponent {
   title = 'cats';
