@@ -31,7 +31,6 @@
     "node_modules",
     "cypress",
     "cypress.config.ts",
-    // Including this file worked for me just in case
     "cypress.d.ts"
   ],
   "types": ["cypress", "jest", "node"],
