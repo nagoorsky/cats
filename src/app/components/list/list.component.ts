@@ -57,7 +57,7 @@ export class ListComponent {
     return Math.ceil(viewportHeight / this.factItemHeight);
   }
 
-  private loadInitialFacts(size: number): void {
+  public loadInitialFacts(size: number): void {
     this.progressBar.show();
     this.apiService.getManyFacts(size).subscribe((response: FactsDto) => {
       this.facts.set(response.data);
