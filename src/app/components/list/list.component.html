@@ -2,7 +2,7 @@
   <div
     *cdkVirtualFor="let fact of facts(); trackBy: trackByFn"
     class="my-2 mx-4 p-4 sm:my-4 sm:mx-auto sm:p-6 shadow-xl rounded-md w-auto sm:min-w-[400px] sm:max-w-[600px] flex items-center justify-center text-center border-2 border-gray-300 bg-gray-200"
-    [ngStyle]="{'min-height': factItemHeight + 'px'}"
+    [ngStyle]="{ 'min-height': factItemHeight + 'px' }"
   >
     {{ fact }}
   </div>
@@ -11,9 +11,18 @@
     class="flex flex-col items-center justify-center h-40 mx-4 sm:mx-auto w-auto sm:min-w-[400px] sm:max-w-[600px] mb-2"
   >
     <div class="text-center bg-red-100 p-4 rounded-md w-full">
-      <p class="text-sm sm:text-base">Probably you know everything about cats now</p>
-      <p class="text-sm sm:text-base">Fetching new facts aborted after {{ retryLimit }} retries</p>
-      <button class="bg-blue-500 text-white p-2 mt-2 rounded-md hover:bg-blue-600 transition-colors" (click)="startOver()">Start over</button>
+      <p class="text-sm sm:text-base">
+        Probably you know everything about cats now
+      </p>
+      <p class="text-sm sm:text-base">
+        Fetching new facts aborted after {{ retryLimit }} retries
+      </p>
+      <button
+        class="bg-blue-500 text-white p-2 mt-2 rounded-md hover:bg-blue-600 transition-colors"
+        (click)="startOver()"
+      >
+        Start over
+      </button>
     </div>
   </div>
   }

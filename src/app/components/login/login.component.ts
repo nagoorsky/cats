@@ -61,7 +61,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.loginError.set(false);
 
       const credentials: User = this.loginForm.value as User;
-      this.authService.login(credentials).subscribe({
+      this.authService.login(credentials).pipe(takeUntil(this.destroy$)).subscribe({
         next: (isValid) => {
           this.progressBar.hide();
           if (!isValid) {

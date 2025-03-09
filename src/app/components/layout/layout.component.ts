@@ -9,20 +9,17 @@ import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-layout',
-  imports: [
-    RouterOutlet,
-    MatProgressBarModule,
-    MatButtonModule,
-    MatIconModule
-  ],
-  templateUrl: './layout.component.html'
+  imports: [RouterOutlet, MatProgressBarModule, MatButtonModule, MatIconModule],
+  templateUrl: './layout.component.html',
 })
 export class LayoutComponent {
   protected readonly progressBar = inject(ProgressBarService);
   protected readonly authService = inject(AuthService);
   private readonly title = inject(Title);
 
-  pageTitle = computed(() => this.authService.isLoggedIn() ? 'Cat facts list' : 'Login page');
+  pageTitle = computed(() =>
+    this.authService.isLoggedIn() ? 'Cat facts list' : 'Login page'
+  );
 
   setMetaTitle = effect(() => {
     const prefix = 'Cats | ';
