@@ -23,11 +23,7 @@ import { ProgressBarService } from '../../services/progress-bar.service';
 @Component({
   selector: 'app-list',
   standalone: true,
-  imports: [
-    CommonModule,
-    ScrollingModule,
-    CdkVirtualScrollViewport,
-  ],
+  imports: [CommonModule, ScrollingModule, CdkVirtualScrollViewport],
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss'],
 })
@@ -42,12 +38,12 @@ export class ListComponent {
 
   facts = signal<string[]>([]);
   limitReached = signal<boolean>(false);
-  retryCount = signal<number>(0);
 
   readonly factItemHeight = config.factItemHeight;
   readonly retryLimit = config.retryLimit;
+  readonly viewportOffsetTrigger = config.viewportOffsetTrigger;
 
-  private readonly abortFetching$ = new Subject<void>();
+  private abortFetching$ = new Subject<void>();
 
   initializeEffect = effect(() => {
     if (this.viewport()) {
@@ -69,21 +65,20 @@ export class ListComponent {
     });
   }
 
-  private readonly scroll$ = this.scrollDispatcher.scrolled().pipe(
-    filter(() => {
-      const bottom = this.viewport().measureScrollOffset('bottom');
-      return bottom < this.factItemHeight || this.limitReached();
-    }),
-    takeUntil(this.abortFetching$)
-  );
+  private get scroll$() {
+    return this.scrollDispatcher.scrolled().pipe(
+      filter(() => {
+        const bottom = this.viewport().measureScrollOffset('bottom');
+        return bottom < this.viewportOffsetTrigger && !this.limitReached();
+      }),
+      takeUntil(this.abortFetching$)
+    );
+  }
 
   getFactsStream$ = this.scroll$.pipe(
     tap(() => this.progressBar.show()),
     switchMap(() => this.getNewFact()),
-    catchError(() => {
-      this.progressBar.hide();
-      return EMPTY;
-    })
+    catchError((error: any) => this.handleError(error))
   );
 
   private getNewFact(): Observable<FactsDto | null> {
@@ -99,11 +94,9 @@ export class ListComponent {
 
     if (this.isDuplicate(newFact)) {
       this.handleDuplicate();
-      throw new Error('duplicate fact');
     }
 
     this.facts.update((facts) => [...facts, newFact]);
-    this.retryCount.set(0);
   }
 
   private isDuplicate(fact: string): boolean {
@@ -111,12 +104,31 @@ export class ListComponent {
   }
 
   private handleDuplicate(): void {
-    this.retryCount.update((count) => count + 1);
+    throw new Error('duplicate fact');
+  }
 
-    if (this.retryCount() >= this.retryLimit) {
-      this.limitReached.set(true);
+  private handleError(error: any) {
+    if (error.message === 'duplicate fact') {
       this.abortFetching$.next();
+      this.progressBar.hide();
+      this.limitReached.set(true);
     }
+    return EMPTY;
+  }
+
+  public startOver() {
+    this.abortFetching$.next();
+    this.abortFetching$.complete();
+    this.abortFetching$ = new Subject<void>();
+    this.facts.set([]);
+    this.limitReached.set(false);
+    this.loadInitialFacts(this.calculateInitialSize());
+
+    this.getFactsStream$ = this.scroll$.pipe(
+      tap(() => this.progressBar.show()),
+      switchMap(() => this.getNewFact()),
+      catchError((error: any) => this.handleError(error))
+    );
   }
 
   public trackByFn(index: number, fact: string): string {
