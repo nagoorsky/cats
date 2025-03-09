@@ -14,7 +14,6 @@ import { User } from '@app/shared/interfaces/user.interface';
 
 @Component({
   selector: 'app-login',
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,

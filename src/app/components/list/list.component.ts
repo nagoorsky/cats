@@ -23,7 +23,6 @@ import { FactsDto } from '@app/shared/interfaces/fact.interface';
 
 @Component({
   selector: 'app-list',
-  standalone: true,
   imports: [CommonModule, ScrollingModule, CdkVirtualScrollViewport],
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss'],

@@ -10,6 +10,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { User } from '@app/shared/interfaces/user.interface';
+import { MatCardModule } from '@angular/material/card';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -37,14 +38,9 @@ describe('LoginComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      declarations: [LoginComponent],
       imports: [
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        BrowserAnimationsModule,
-        MatIconModule,
-        MatButtonModule
+        LoginComponent,
+        BrowserAnimationsModule
       ],
       providers: [
         { provide: AuthService, useValue: authServiceMock },
