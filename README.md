@@ -1,59 +1,120 @@
-# Cats
+# 🐱 Cat Facts App
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.1.
+A modern Angular application that displays endless cat facts using virtual scrolling. Built with Angular Material and styled with Tailwind CSS.
 
-## Development server
+## ✨ Features
 
-To start a local development server, run:
+- 🔄 Infinite scrolling of cat facts
+- 📱 Responsive design
+- 🎨 Modern UI with Material Design
+- 🔒 Authentication system
+- 📜 Virtual scrolling for performance
+- 🔄 "Start Over" functionality
+- 🧪 Comprehensive test coverage
 
-```bash
-ng serve
-```
+## 🚀 Getting Started
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+### Prerequisites
 
-## Code scaffolding
+- Node.js (v18 or higher)
+- npm (v9 or higher)
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+### Installation
 
 ```bash
-ng build
+# Clone the repository
+git clone https://github.com/nagoorsky/cats.git
+
+# Install dependencies
+npm install
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## 🛠️ Available Commands
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+### Development
 
 ```bash
-ng test
+# Start development server (opens automatically in browser)
+npm start
 ```
+The application will be available at `http://localhost:4200`
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+### Testing
 
 ```bash
-ng e2e
+# Run unit tests with coverage report
+npm test
+
+# Run end-to-end tests in Cypress GUI
+npm run e2e
+
+# Run end-to-end tests in headless mode
+npm run e2e:run
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## 🏗️ Project Structure
 
-## Additional Resources
+```
+.
+├── src/
+│   ├── app/
+│   │   ├── components/     # Application components
+│   │   ├── services/       # Services for data fetching and auth
+│   │   ├── guards/         # Route guards
+│   │   └── shared/         # Shared resources
+│   │       └── interfaces/ # TypeScript interfaces
+│   ├── assets/            # Static assets
+│   └── styles/           # Global styles
+│
+└── cypress/
+    ├── e2e/              # End-to-end tests
+    └── fixtures/         # Test data and mocks
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## 🧪 Testing
+
+### Unit Tests
+- Using Jest as the test runner
+
+### E2E Tests
+- Using Cypress
+- Tests located in `cypress/e2e/`
+- Testing key user flows:
+  - Authentication
+  - Infinite scrolling
+  - Error handling
+  - Start Over functionality
+
+## 🔒 Authentication
+
+The application includes a simple authentication system:
+- Login required to view cat facts
+- Session management
+- Protected routes
+- Automatic redirect to login
+
+## 🎯 Key Features Implementation
+
+### Virtual Scrolling
+- Implemented using `@angular/cdk/scrolling`
+- Optimized performance for large lists
+- Maintains scroll position
+
+### Error Handling
+- Duplicate fact detection
+- User-friendly error messages
+- Aborting retrieving new facts after 5 tries
+  
+## 🎨 Styling
+
+- Material Design components from `@angular/material`
+- Responsive design using Tailwind CSS
+- Custom theme support
+- Mobile-first approach
+
+## 📱 Responsive Design
+
+The application is fully responsive and tested on:
+- Desktop browsers
+- Tablets
+- Mobile devices

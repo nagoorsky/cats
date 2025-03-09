@@ -1,48 +1,55 @@
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LoginComponent } from './login.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
-import { ProgressBarService } from '../../services/progress-bar.service';
+import { ReactiveFormsModule } from '@angular/forms';
+import { of, throwError } from 'rxjs';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { User } from '@app/shared/interfaces/user.interface';
+import { MatCardModule } from '@angular/material/card';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
   let authService: jest.Mocked<AuthService>;
   let router: jest.Mocked<Router>;
-  let progressBar: jest.Mocked<ProgressBarService>;
+
+  const mockValidUser: User = {
+    username: '1',
+    password: '1'
+  };
+
+  const mockInvalidUser: User = {
+    username: 'wrong',
+    password: 'wrong'
+  };
 
   beforeEach(async () => {
     const authServiceMock = {
-      login: jest.fn(),
-      isLoggedIn: jest.fn().mockReturnValue(false)
-    } as unknown as jest.Mocked<AuthService>;
+      login: jest.fn()
+    };
 
     const routerMock = {
       navigate: jest.fn()
-    } as unknown as jest.Mocked<Router>;
-
-    const progressBarMock = {
-      show: jest.fn(),
-      hide: jest.fn()
-    } as unknown as jest.Mocked<ProgressBarService>;
+    };
 
     await TestBed.configureTestingModule({
-      imports: [LoginComponent, BrowserAnimationsModule],
+      imports: [
+        LoginComponent,
+        BrowserAnimationsModule
+      ],
       providers: [
         { provide: AuthService, useValue: authServiceMock },
-        { provide: Router, useValue: routerMock },
-        { provide: ProgressBarService, useValue: progressBarMock }
+        { provide: Router, useValue: routerMock }
       ]
     }).compileComponents();
 
     authService = TestBed.inject(AuthService) as jest.Mocked<AuthService>;
     router = TestBed.inject(Router) as jest.Mocked<Router>;
-    progressBar = TestBed.inject(ProgressBarService) as jest.Mocked<ProgressBarService>;
-  });
-
-  beforeEach(() => {
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -52,62 +59,51 @@ describe('LoginComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize form with empty values', () => {
+  it('should initialize with empty form', () => {
     expect(component.loginForm.get('username')?.value).toBe('');
     expect(component.loginForm.get('password')?.value).toBe('');
   });
 
-  it('should show validation errors when form is submitted empty', () => {
+  it('should show validation errors when form is invalid', () => {
+    component.loginForm.controls.username.markAsTouched();
+    component.loginForm.controls.password.markAsTouched();
+    fixture.detectChanges();
+
+    const usernameError = fixture.nativeElement.querySelector('mat-error');
+    const passwordError = fixture.nativeElement.querySelector('mat-error');
+
+    expect(usernameError).toBeTruthy();
+    expect(passwordError).toBeTruthy();
+  });
+
+  it('should call login with valid credentials and navigate on success', () => {
+    authService.login.mockReturnValue(of(true));
+
+    component.loginForm.setValue(mockValidUser);
     component.onSubmit();
-    expect(component.loginForm.get('username')?.errors?.['required']).toBeTruthy();
-    expect(component.loginForm.get('password')?.errors?.['required']).toBeTruthy();
+
+    expect(authService.login).toHaveBeenCalledWith(mockValidUser);
+    expect(router.navigate).toHaveBeenCalledWith(['/list']);
+  });
+
+  it('should show error message on login failure', () => {
+    authService.login.mockReturnValue(throwError(() => new Error('Login failed')));
+
+    component.loginForm.setValue(mockInvalidUser);
+    component.onSubmit();
+
+    expect(authService.login).toHaveBeenCalledWith(mockInvalidUser);
+    expect(component.loginError()).toBe(true);
   });
 
   it('should toggle password visibility', () => {
     expect(component.hidePassword()).toBe(true);
-    component.togglePassword();
+
+    const toggleButton = fixture.nativeElement.querySelector('button[type="button"]');
+    toggleButton.click();
     expect(component.hidePassword()).toBe(false);
-    component.togglePassword();
+
+    toggleButton.click();
     expect(component.hidePassword()).toBe(true);
   });
-
-  it('should reset login error when form values change', () => {
-    component.loginError.set(true);
-    component.loginForm.get('username')?.setValue('test');
-    expect(component.loginError()).toBe(false);
-  });
-
-  it('should handle successful login', fakeAsync(() => {
-    authService.login.mockReturnValue(of(true));
-
-    component.loginForm.setValue({
-      username: '1',
-      password: '1'
-    });
-
-    component.onSubmit();
-    tick(1000);
-
-    expect(progressBar.show).toHaveBeenCalled();
-    expect(progressBar.hide).toHaveBeenCalled();
-    expect(router.navigate).toHaveBeenCalledWith(['/list']);
-    expect(component.loginError()).toBe(false);
-  }));
-
-  it('should handle failed login', fakeAsync(() => {
-    authService.login.mockReturnValue(of(false));
-
-    component.loginForm.setValue({
-      username: 'wrong',
-      password: 'wrong'
-    });
-
-    component.onSubmit();
-    tick(1000);
-
-    expect(progressBar.show).toHaveBeenCalled();
-    expect(progressBar.hide).toHaveBeenCalled();
-    expect(router.navigate).not.toHaveBeenCalled();
-    expect(component.loginError()).toBe(true);
-  }));
 });

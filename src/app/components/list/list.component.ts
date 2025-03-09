@@ -5,7 +5,7 @@ import {
   CdkVirtualScrollViewport,
   ScrollDispatcher,
 } from '@angular/cdk/scrolling';
-import { ApiService, FactsDto } from '../../services/api.service';
+import { ApiService } from '../../services/api.service';
 import { config } from '../../shared/config';
 import {
   catchError,
@@ -19,10 +19,10 @@ import {
   tap,
 } from 'rxjs';
 import { ProgressBarService } from '../../services/progress-bar.service';
+import { FactsDto } from '@app/shared/interfaces/fact.interface';
 
 @Component({
   selector: 'app-list',
-  standalone: true,
   imports: [CommonModule, ScrollingModule, CdkVirtualScrollViewport],
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss'],

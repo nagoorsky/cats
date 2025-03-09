@@ -50,7 +50,7 @@ describe('AuthService', () => {
     });
 
     it('should return true and set isLoggedIn for valid credentials', fakeAsync(() => {
-      service.login('1', '1').subscribe(result => {
+      service.login({ username: '1', password: '1' }).subscribe(result => {
         expect(result).toBe(true);
         expect(service.isLoggedIn()).toBe(true);
         expect(storageMock['isLoggedIn']).toBe('true');
@@ -59,7 +59,7 @@ describe('AuthService', () => {
     }));
 
     it('should return false and not set isLoggedIn for invalid credentials', fakeAsync(() => {
-      service.login('wrong', 'wrong').subscribe(result => {
+      service.login({ username: 'wrong', password: 'wrong' }).subscribe(result => {
         expect(result).toBe(false);
         expect(service.isLoggedIn()).toBe(false);
         expect(storageMock['isLoggedIn']).toBeUndefined();
