@@ -1,2 +1,29 @@
-<div class="h-10 bg-red-500"><p>layout works!</p></div>
-<router-outlet/>
+<div class="flex flex-col min-h-screen">
+  <div class="relative h-10">
+    <div class="h-full bg-white flex items-center justify-between px-4 shadow-md">
+      <div class="w-24">
+      </div>
+
+      <div class="font-medium text-gray-700">
+        {{ title() }}
+      </div>
+
+      <div class="w-24 flex justify-end">
+        <button mat-button color="warn">
+          <mat-icon>logout</mat-icon>
+          <span class="ml-1">Logout</span>
+        </button>
+      </div>
+    </div>
+
+    @if(progressBar.loading()) {
+      <mat-progress-bar
+        mode="indeterminate"
+        class="absolute bottom-1 left-0 w-full z-10" />
+    }
+  </div>
+
+  <main class="flex-1 bg-gray-100">
+    <router-outlet />
+  </main>
+</div>

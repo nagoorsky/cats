@@ -1,10 +1,4 @@
-import {
-  Component,
-  effect,
-  inject,
-  signal,
-  viewChild,
-} from '@angular/core';
+import { Component, effect, inject, signal, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   ScrollingModule,
@@ -24,7 +18,7 @@ import {
   takeUntil,
   tap,
 } from 'rxjs';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { ProgressBarService } from '../../services/progress-bar.service';
 
 @Component({
   selector: 'app-list',
@@ -33,7 +27,6 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     CommonModule,
     ScrollingModule,
     CdkVirtualScrollViewport,
-    MatProgressBarModule,
   ],
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss'],
@@ -41,13 +34,13 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 export class ListComponent {
   private readonly apiService = inject(ApiService);
   private readonly scrollDispatcher = inject(ScrollDispatcher);
+  private readonly progressBar = inject(ProgressBarService);
 
   viewport = viewChild.required<CdkVirtualScrollViewport>(
     CdkVirtualScrollViewport
   );
 
   facts = signal<string[]>([]);
-  loading = signal<boolean>(false);
   limitReached = signal<boolean>(false);
   retryCount = signal<number>(0);
 
@@ -65,17 +58,15 @@ export class ListComponent {
 
   private calculateInitialSize(): number {
     const viewportHeight = window.innerHeight;
-    return Math.ceil(viewportHeight / (this.factItemHeight));
+    return Math.ceil(viewportHeight / this.factItemHeight);
   }
 
   private loadInitialFacts(size: number): void {
-    this.loading.set(true);
-    this.apiService
-      .getManyFacts(size)
-      .subscribe((response: FactsDto) => {
-        this.facts.set(response.data);
-        this.loading.set(false);
-      });
+    this.progressBar.show();
+    this.apiService.getManyFacts(size).subscribe((response: FactsDto) => {
+      this.facts.set(response.data);
+      this.progressBar.hide();
+    });
   }
 
   private readonly scroll$ = this.scrollDispatcher.scrolled().pipe(
@@ -87,10 +78,10 @@ export class ListComponent {
   );
 
   getFactsStream$ = this.scroll$.pipe(
-    tap(() => this.loading.set(true)),
+    tap(() => this.progressBar.show()),
     switchMap(() => this.getNewFact()),
     catchError(() => {
-      this.loading.set(false);
+      this.progressBar.hide();
       return EMPTY;
     })
   );
@@ -98,16 +89,12 @@ export class ListComponent {
   private getNewFact(): Observable<FactsDto | null> {
     return this.apiService.getOneFact().pipe(
       tap((response) => this.handleNewFact(response)),
-      retry({
-        count: this.retryLimit,
-        resetOnSuccess: true,
-        delay: 50,
-      })
+      retry(this.retryLimit)
     );
   }
 
   private handleNewFact(response: FactsDto): void {
-    this.loading.set(false);
+    this.progressBar.hide();
     const newFact = response.data[0];
 
     if (this.isDuplicate(newFact)) {

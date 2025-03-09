@@ -1,1 +1,62 @@
-<p>login works!</p>
+<div class="viewport flex items-center justify-center bg-gray-100 p-4">
+  <mat-card class="w-full max-w-[400px] p-6 rounded-lg shadow-md h-[432px]">
+    <mat-card-header class="mb-6">
+      <mat-card-title class="text-2xl font-medium">Login</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content class="h-full">
+      <form [formGroup]="loginForm"
+            (ngSubmit)="onSubmit()"
+            class="flex flex-col h-full">
+        <div class="flex-1">
+          <div class="flex flex-col gap-5">
+            <mat-form-field class="w-full" appearance="outline">
+              <mat-label>Login</mat-label>
+              <mat-icon matPrefix>person</mat-icon>
+              <input matInput
+                     formControlName="username"
+                     placeholder="Enter login" />
+              @if(loginForm.get('username')?.errors?.['required'] && loginForm.get('username')?.touched) {
+                <mat-error>Login is required</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field class="w-full" appearance="outline">
+              <mat-label>Password</mat-label>
+              <mat-icon matPrefix>lock</mat-icon>
+              <input matInput
+                     [type]="hidePassword() ? 'password' : 'text'"
+                     formControlName="password"
+                     placeholder="Enter password" />
+              <button mat-icon-button
+                      matSuffix
+                      (click)="togglePassword()"
+                      type="button">
+                <mat-icon>{{hidePassword() ? "visibility_off" : "visibility"}}</mat-icon>
+              </button>
+              @if(loginForm.get('password')?.errors?.['required'] && loginForm.get('password')?.touched) {
+                <mat-error>Password is required</mat-error>
+              }
+            </mat-form-field>
+
+            @if(loginError()) {
+              <div class="mx-auto w-[200px] flex items-center justify-center gap-3 text-red-500 text-sm p-2 bg-red-50 rounded-lg">
+                <mat-icon>error_outline</mat-icon>
+                <span>Invalid credentials!</span>
+              </div>
+            }
+          </div>
+        </div>
+
+        <button mat-raised-button
+                color="primary"
+                class="h-12 w-40 mx-auto rounded-full"
+                type="submit"
+                [disabled]="loginForm.invalid || progressBar.loading()">
+          <mat-icon>login</mat-icon>
+          <span>Login</span>
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
