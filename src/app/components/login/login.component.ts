@@ -11,6 +11,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Subject, takeUntil } from 'rxjs';
 import { Router } from '@angular/router';
 import { ProgressBarService } from '../../services/progress-bar.service';
+import { User } from '@app/shared/interfaces/user.interface';
 
 @Component({
   selector: 'app-login',
@@ -62,8 +63,8 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.progressBar.show();
       this.loginError.set(false);
 
-      const { username, password } = this.loginForm.value;
-      this.authService.login(username!, password!).subscribe({
+      const credentials: User = this.loginForm.value as User;
+      this.authService.login(credentials).subscribe({
         next: (isValid) => {
           this.progressBar.hide();
           if (!isValid) {

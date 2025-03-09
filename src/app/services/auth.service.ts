@@ -1,5 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { User } from '@app/shared/interfaces/user.interface';
 import { Observable, of } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
 
@@ -18,9 +19,9 @@ export class AuthService {
     return localStorage.getItem(this.IS_LOGGED_KEY) === 'true';
   }
 
-  login(username: string, password: string): Observable<boolean> {
+  login(credentials: User): Observable<boolean> {
     const isValid =
-      username === this.VALID_USERNAME && password === this.VALID_PASSWORD;
+      credentials.username === this.VALID_USERNAME && credentials.password === this.VALID_PASSWORD;
     return of(isValid).pipe(
       delay(1000), // Simulate API delay
       tap(() => {

@@ -23,7 +23,7 @@ A modern Angular application that displays endless cat facts using virtual scrol
 
 ```bash
 # Clone the repository
-git clone [your-repo-url]
+git clone https://github.com/nagoorsky/cats.git
 
 # Install dependencies
 npm install
@@ -55,14 +55,20 @@ npm run e2e:run
 ## 🏗️ Project Structure
 
 ```
-src/
-├── app/
-│   ├── components/      # Application components
-│   ├── services/        # Services for data fetching and auth
-│   ├── guards/          # Route guards
-│   └── models/          # TypeScript interfaces
-├── assets/             # Static assets
-└── styles/            # Global styles
+.
+├── src/
+│   ├── app/
+│   │   ├── components/     # Application components
+│   │   ├── services/       # Services for data fetching and auth
+│   │   ├── guards/         # Route guards
+│   │   └── shared/         # Shared resources
+│   │       └── interfaces/ # TypeScript interfaces
+│   ├── assets/            # Static assets
+│   └── styles/           # Global styles
+│
+└── cypress/
+    ├── e2e/              # End-to-end tests
+    └── fixtures/         # Test data and mocks
 ```
 
 ## 🧪 Testing

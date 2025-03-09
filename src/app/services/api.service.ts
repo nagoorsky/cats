@@ -2,10 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { config } from '../shared/config';
-
-export interface FactsDto {
-  data: string[];
-}
+import { FactsDto } from '@app/shared/interfaces/fact.interface';
 
 @Injectable({
   providedIn: 'root',
