@@ -7,7 +7,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../services/auth.service';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Subject, takeUntil } from 'rxjs';
 import { Router } from '@angular/router';
 import { ProgressBarService } from '../../services/progress-bar.service';
@@ -24,7 +23,6 @@ import { User } from '@app/shared/interfaces/user.interface';
     MatButtonModule,
     MatCardModule,
     MatIconModule,
-    MatProgressBarModule
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
