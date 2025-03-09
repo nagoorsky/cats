@@ -3,17 +3,14 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --open",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
+    "test": "jest --coverage",
     "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand",
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run",
-    "e2e": "ng serve & cypress open",
-    "test:e2e": "ng serve & cypress run"
+    "e2e": "cypress open",
+    "e2e:run": "cypress run",
+    "e2e:ci": "start-server-and-test start http://localhost:4200 cypress:run"
   },
   "private": true,
   "dependencies": {
