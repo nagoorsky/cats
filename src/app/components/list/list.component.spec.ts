@@ -12,7 +12,6 @@ describe('ListComponent', () => {
   let fixture: ComponentFixture<ListComponent>;
   let apiService: jest.Mocked<ApiService>;
   let progressBar: jest.Mocked<ProgressBarService>;
-  let scrollDispatcher: jest.Mocked<ScrollDispatcher>;
   let scrolled$: Subject<void>;
 
   beforeEach(async () => {
@@ -44,7 +43,6 @@ describe('ListComponent', () => {
 
     apiService = TestBed.inject(ApiService) as jest.Mocked<ApiService>;
     progressBar = TestBed.inject(ProgressBarService) as jest.Mocked<ProgressBarService>;
-    scrollDispatcher = TestBed.inject(ScrollDispatcher) as jest.Mocked<ScrollDispatcher>;
   });
 
   beforeEach(() => {
@@ -101,7 +99,6 @@ describe('ListComponent', () => {
   it('should detect duplicate facts', () => {
     const fact = 'duplicate fact';
     component.facts.set([fact]);
-    // Access private method through any type assertion
     expect((component as any).isDuplicate(fact)).toBe(true);
   });
 

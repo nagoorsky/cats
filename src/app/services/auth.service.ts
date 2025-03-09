@@ -9,8 +9,8 @@ import { delay, tap } from 'rxjs/operators';
 })
 export class AuthService {
   private readonly router = inject(Router);
-  private readonly VALID_USERNAME = '1';
-  private readonly VALID_PASSWORD = '1';
+  private readonly VALID_USERNAME = 'admin';
+  private readonly VALID_PASSWORD = 'admin';
   private readonly IS_LOGGED_KEY = 'isLoggedIn';
 
   isLoggedIn = signal<boolean>(this.checkLoginStatus());

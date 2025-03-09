@@ -39,11 +39,21 @@ export class ListComponent {
   facts = signal<string[]>([]);
   limitReached = signal<boolean>(false);
 
-  readonly factItemHeight = config.factItemHeight;
-  readonly retryLimit = config.retryLimit;
-  readonly viewportOffsetTrigger = config.viewportOffsetTrigger;
+  readonly factItemHeight: number = config.factItemHeight;
+  readonly retryLimit: number = config.retryLimit;
+  readonly viewportOffsetTrigger: number = config.viewportOffsetTrigger;
 
   private abortFetching$ = new Subject<void>();
+
+  private createFactsStream(): Observable<FactsDto | null> {
+    return this.scroll$.pipe(
+      tap(() => this.progressBar.show()),
+      switchMap(() => this.getNewFact()),
+      catchError((error: any) => this.handleError(error))
+    );
+  }
+
+  getFactsStream$ = this.createFactsStream();
 
   initializeEffect = effect(() => {
     if (this.viewport()) {
@@ -59,10 +69,17 @@ export class ListComponent {
 
   public loadInitialFacts(size: number): void {
     this.progressBar.show();
-    this.apiService.getManyFacts(size).subscribe((response: FactsDto) => {
-      this.facts.set(response.data);
-      this.progressBar.hide();
-    });
+    this.apiService
+      .getManyFacts(size)
+      .pipe(
+        catchError(() => {
+          return EMPTY;
+        })
+      )
+      .subscribe((response: FactsDto) => {
+        this.facts.set(response.data);
+        this.progressBar.hide();
+      });
   }
 
   private get scroll$() {
@@ -74,12 +91,6 @@ export class ListComponent {
       takeUntil(this.abortFetching$)
     );
   }
-
-  getFactsStream$ = this.scroll$.pipe(
-    tap(() => this.progressBar.show()),
-    switchMap(() => this.getNewFact()),
-    catchError((error: any) => this.handleError(error))
-  );
 
   private getNewFact(): Observable<FactsDto | null> {
     return this.apiService.getOneFact().pipe(
@@ -108,15 +119,13 @@ export class ListComponent {
   }
 
   private handleError(error: any) {
-    if (error.message === 'duplicate fact') {
-      this.abortFetching$.next();
-      this.progressBar.hide();
-      this.limitReached.set(true);
-    }
+    this.abortFetching$.next();
+    this.progressBar.hide();
+    this.limitReached.set(true);
     return EMPTY;
   }
 
-  public startOver() {
+  public startOver(): void {
     this.abortFetching$.next();
     this.abortFetching$.complete();
     this.abortFetching$ = new Subject<void>();
@@ -124,11 +133,7 @@ export class ListComponent {
     this.limitReached.set(false);
     this.loadInitialFacts(this.calculateInitialSize());
 
-    this.getFactsStream$ = this.scroll$.pipe(
-      tap(() => this.progressBar.show()),
-      switchMap(() => this.getNewFact()),
-      catchError((error: any) => this.handleError(error))
-    );
+    this.getFactsStream$ = this.createFactsStream();
   }
 
   public trackByFn(index: number, fact: string): string {

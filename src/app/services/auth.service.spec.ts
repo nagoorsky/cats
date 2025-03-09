@@ -50,7 +50,7 @@ describe('AuthService', () => {
     });
 
     it('should return true and set isLoggedIn for valid credentials', fakeAsync(() => {
-      service.login({ username: '1', password: '1' }).subscribe(result => {
+      service.login({ username: 'admin', password: 'admin' }).subscribe(result => {
         expect(result).toBe(true);
         expect(service.isLoggedIn()).toBe(true);
         expect(storageMock['isLoggedIn']).toBe('true');
