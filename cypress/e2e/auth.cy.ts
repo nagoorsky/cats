@@ -30,7 +30,6 @@ describe('Authentication', () => {
       cy.login(validUser.username, validUser.password);
       cy.url().should('include', '/list');
 
-      // Reload page
       cy.reload();
       cy.url().should('include', '/list');
     });
@@ -45,7 +44,6 @@ describe('Authentication', () => {
       cy.get('button').contains('Logout').click();
       cy.url().should('include', '/login');
 
-      // Verify we can't access protected route after logout
       cy.visit('/list');
       cy.url().should('include', '/login');
     });
